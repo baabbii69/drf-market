@@ -9,24 +9,6 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveMode
 from rest_framework.generics import ListCreateAPIView
 
 
-
-class ProductDetail(APIView):
-    def get(self, request, *args, **kwargs):
-        product = get_object_or_404(Product, pk=kwargs['pk'])
-        serializer = ProductSerializer(product)
-        return Response(serializer.data)
-
-    # def put(self, request, *args, **kwargs):
-    #     serializer = ProductSerializer(request.data)
-    #     if serializer.is_valid():
-    #         try:
-    #             product = Product.objects.get(pk=kwargs['pk'])
-    #         except:
-    #             return Response({"error": "Product doesn't exist"})
-    #
-    #
-
-
 class OrderListAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
@@ -44,15 +26,8 @@ class OrderListAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProductDetailAPIViewSet(RetrieveModelMixin, GenericViewSet):
-    def retrieve(self, request, *args, **kwargs):
-        product = get_object_or_404(Product, pk=kwargs['pk'])
-        serializer = ProductSerializer(product)
-        return Response(serializer.data)
 
-
-
-class ProductListAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
+class ProductListAPIViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin,  GenericViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -67,3 +42,8 @@ class ProductListAPIViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        product = get_object_or_404(Product, pk=kwargs['pk'])
+        serializer = self.get_serializer(product)
+        return Response(serializer.data)

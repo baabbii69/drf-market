@@ -1,11 +1,10 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import OrderListAPIViewSet, ProductListAPIViewSet, ProductDetailAPIViewSet
+from .views import OrderListAPIViewSet, ProductListAPIViewSet
 
 router = DefaultRouter()
-router.register(r'orders', OrderListAPIViewSet, basename='orders')
-router.register(r'products', ProductListAPIViewSet, basename='products')
-router.register(r'products', ProductDetailAPIViewSet, basename='product')
+router.register(r'products', ProductListAPIViewSet, basename='products')  # List and create products # Retrieve single product
+router.register(r'orders', OrderListAPIViewSet, basename='orders')  # Orders
 
 urlpatterns = router.urls
 
